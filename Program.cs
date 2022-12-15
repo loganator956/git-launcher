@@ -1,7 +1,14 @@
 ﻿using System.Diagnostics;
 
-string gitBashPath = Path.Combine(Directory.GetCurrentDirectory(), "git-bash.exe");
-string homeDirectory = Path.Combine(Directory.GetCurrentDirectory(), "home");
+ProcessModule? module = Process.GetCurrentProcess().MainModule;
+if (module is null)
+    throw new NullReferenceException("MainModule of current process is null");
+
+string currentExe = module.FileName ?? String.Empty;
+string currentExeDirectory = Path.GetDirectoryName(currentExe) ?? String.Empty;
+
+string gitBashPath = Path.Combine(currentExeDirectory, "git-bash.exe");
+string homeDirectory = Path.Combine(currentExeDirectory, "home");
 try
 {
     if (!File.Exists(gitBashPath))
